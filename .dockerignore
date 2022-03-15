@@ -1,0 +1,10 @@
+.dockerignore
+.env*
+.git
+.gitignore
+.pre-commit-config.yaml
+**/__pycache__
+README.md
+Dockerfile
+docker-compose*
+pyproject.toml
