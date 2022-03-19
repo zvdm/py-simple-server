@@ -6,19 +6,34 @@ services:
     build:
       context: .
     restart: always
-    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "gunicorn --bind 0.0.0.0:8000 --workers 3 --threads 1 --timeout 180 core_server.wsgi"
     env_file:
       - .env
     environment:
       - POSTGRES_HOST=postgres
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     volumes:
       - ${PWD}:/src
+      - static_volume:/src/main/static
     depends_on:
       - postgres
     profiles:
+      - nginx
       - servers
+    networks:
+      - acl-network
+
+  nginx:
+    image: nginx:latest
+    container_name: acl-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/src/main/static
     networks:
       - acl-network
 
@@ -42,3 +57,4 @@ networks:
 
 volumes:
   postgres:
+  static_volume:
