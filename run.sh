@@ -13,8 +13,6 @@ run_django_commands() {
   pip3 install -r requirements.txt
   echo "[ Django ] Running migrating..."
   ./manage.py migrate --noinput
-  echo "[ Django ] Running collect static..."
-  ./manage.py collectstatic --no-input
   echo "[ Django ] End"
 }
 
@@ -22,9 +20,12 @@ run_docker() {
   echo "[ Docker ] Running docker compose command..."
   if [ -n "$flag" ] && [ "$flag" == "-d" ]; then
     COMPOSE_IGNORE_ORPHANS=True docker-compose -p acl-backend --profile servers up -d
+    docker cp nginx.conf acl-nginx:/etc/nginx/conf.d/default.conf
+    docker restart acl-nginx
     echo "[ Docker ] End"
     exit
   else
+    setup_env
     COMPOSE_IGNORE_ORPHANS=True docker-compose -p acl-backend up -d
     echo "[ Docker ] End"
   fi
@@ -44,7 +45,6 @@ setup_env() {
 if [ $# -eq 1 ]; then
   flag=$1
 fi
-setup_env
 run_docker
 run_django_commands
 if [ -n "$flag" ] && [ "$flag" == "-t" ]; then

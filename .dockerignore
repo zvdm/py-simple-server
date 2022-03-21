@@ -1,10 +1,15 @@
+**/.DS_Store
 .dockerignore
 .env*
 .git
 .gitignore
+.idea
 .pre-commit-config.yaml
 **/__pycache__
+**/test*
 README.md
 Dockerfile
 docker-compose*
+nginx*
 pyproject.toml
+run.sh

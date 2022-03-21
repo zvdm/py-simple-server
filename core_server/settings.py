@@ -10,7 +10,7 @@ env.read_env()
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": env("POSTGRES_NAME"),
+        "NAME": env("POSTGRES_DB"),
         "USER": env("POSTGRES_USER"),
         "PASSWORD": env("POSTGRES_PASSWORD"),
         "HOST": env("POSTGRES_HOST", "localhost"),
@@ -98,26 +98,9 @@ WSGI_APPLICATION = "core_server.wsgi.application"
 # ================================ END DJANGO CORE ================================ #
 
 # =============================== MEDIA AND STATIC ================================ #
-STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(Path(__file__).resolve().parent, "static")
+STATIC_URL = "/static/"
+STATIC_ROOT = "/var/www/static"  # to collect static files in docker containers and share with Nginx
 # ============================= END MEDIA AND STATIC ============================== #
-
-# =================================== MAILING ===================================== #
-if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    EMAIL_HOST_USER = "info@example.com"
-else:
-    DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
-    SERVER_EMAIL = env("SERVER_EMAIL")
-
-    with env.prefixed("EMAIL_"):
-        EMAIL_HOST = env("HOST")
-        EMAIL_HOST_PASSWORD = env("HOST_PASSWORD")
-        EMAIL_HOST_USER = env("HOST_USER")
-        EMAIL_PORT = env.int("PORT")
-        EMAIL_TIMEOUT = env.int("TIMEOUT", 20)
-        EMAIL_USE_TLS = env.bool("USE_TLS")
-# ================================= END MAILING =================================== #
 
 # ===================================== MAPS ====================================== #
 MAPS_API_KEY = env("MAPS_API_KEY")
